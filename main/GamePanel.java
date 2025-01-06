@@ -8,13 +8,17 @@ import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable {
     private final int SCALE = 2;
-
     private final int BITS = 32;
+
+    private final int TILE_SIZE = SCALE * BITS;
 
     private final static int FPS = 60;
 
     private final static int MAX_COLS = 15;
     private final static int MAX_ROWS = 11;
+
+    private final int WIDTH = TILE_SIZE * MAX_COLS;
+    private final int HEIGHT = TILE_SIZE * MAX_ROWS;
 
     private Thread gameThread;
 
@@ -22,12 +26,16 @@ public class GamePanel extends JPanel implements Runnable {
 
     private final TileManager tileManager;
 
+    // World settings
+
+    public final int maxWorldCols = 51;
+    public final int maxWorldRows = 15;
+
+    public final int worldWidth = TILE_SIZE * maxWorldCols;
+    public final int worldHeight = TILE_SIZE * maxWorldRows;
+
 
     public GamePanel() {
-        int TILE_SIZE = BITS * SCALE;
-        int WIDTH = TILE_SIZE * MAX_COLS;
-        int HEIGHT = TILE_SIZE * MAX_ROWS;
-
         this.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         this.setBackground(Color.BLACK);
         this.setDoubleBuffered(true);
@@ -94,6 +102,22 @@ public class GamePanel extends JPanel implements Runnable {
     }
 
     public int getSCALE () {
-        return SCALE;
+        return this.SCALE;
+    }
+
+    public int getTILE_SIZE () {
+        return this.TILE_SIZE;
+    }
+
+    public int getWIDTH () {
+        return this.WIDTH;
+    }
+
+    public int getHEIGHT () {
+        return this.HEIGHT;
+    }
+
+    public Player getPlayer () {
+        return this.player;
     }
 }

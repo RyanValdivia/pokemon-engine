@@ -13,18 +13,30 @@ public class Player extends Entity {
     private final GamePanel gamePanel;
     private final KeyHandler keyHandler;
 
+    private final int screenX;
+    private final int screenY;
+
+    private final int defaultSpeed = 4;
+
+    private final BufferedImage[][] runningFrames;
+
 
     public Player (GamePanel gamePanel, KeyHandler keyHandler) {
         this.gamePanel = gamePanel;
         this.keyHandler = keyHandler;
+
+        this.runningFrames = new BufferedImage[4][4];
+
+        this.screenX = this.gamePanel.getWIDTH() / 2 - (gamePanel.getTILE_SIZE() / 2);
+        this.screenY = this.gamePanel.getHEIGHT() / 2 - (gamePanel.getTILE_SIZE() / 2) - 32;
 
         this.setDefaultValues();
         this.getPlayerImage();
     }
 
     public void setDefaultValues () {
-        this.setX(100);
-        this.setY(100);
+        this.setX(25 * this.gamePanel.getTILE_SIZE());
+        this.setY((7 * this.gamePanel.getTILE_SIZE()) - 32);
         this.setSpeed(4);
         this.setDirection(Direction.DOWN);
         this.setSpriteCounter(0);
@@ -53,6 +65,11 @@ public class Player extends Entity {
             this.setX(this.getX() + this.getSpeed());
             this.setDirection(Direction.RIGHT);
         }
+        if (keyHandler.isZPressed()) {
+            this.setSpeed((int) (defaultSpeed * 1.5));
+        } else {
+            this.setSpeed(defaultSpeed);
+        }
 
         this.setSpriteCounter(this.getSpriteCounter() + 1);
         if (this.getSpriteCounter() > 12) {
@@ -75,18 +92,39 @@ public class Player extends Entity {
                 }
             }
 
+            spriteSheet = ImageIO.read(new File("resources/player/player_boy_run.png"));
+
+            frameWidth = spriteSheet.getWidth() / 4;
+            frameHeight = spriteSheet.getHeight() / 4;
+
+            for (int i = 0; i < 4; i++) {
+                for (int j = 0; j < 4; j++) {
+                    this.runningFrames[i][j] = spriteSheet.getSubimage(j * frameWidth, i * frameHeight, frameWidth, frameHeight);
+                }
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public void draw (Graphics2D g2d) {
+        BufferedImage[][] frames = this.keyHandler.isZPressed() ? this.runningFrames : this.getFrames();
+
         BufferedImage image = switch (this.getDirection()) {
-            case DOWN -> this.getFrames()[0][this.getSpriteNumber()];
-            case LEFT -> this.getFrames()[1][this.getSpriteNumber()];
-            case RIGHT -> this.getFrames()[2][this.getSpriteNumber()];
-            case UP -> this.getFrames()[3][this.getSpriteNumber()];
+            case DOWN -> frames[0][this.getSpriteNumber()];
+            case LEFT -> frames[1][this.getSpriteNumber()];
+            case RIGHT -> frames[2][this.getSpriteNumber()];
+            case UP -> frames[3][this.getSpriteNumber()];
         };
-        g2d.drawImage(image, this.getX(), this.getY(), image.getWidth() * this.gamePanel.getSCALE(), image.getHeight() * this.gamePanel.getSCALE(), null);
+        g2d.drawImage(image, this.screenX, this.screenY, image.getWidth() * this.gamePanel.getSCALE(), image.getHeight() * this.gamePanel.getSCALE(), null);
+    }
+
+    public int getScreenX () {
+        return this.screenX;
+    }
+
+    public int getScreenY () {
+        return this.screenY;
     }
 }

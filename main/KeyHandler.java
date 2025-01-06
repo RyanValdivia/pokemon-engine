@@ -9,6 +9,8 @@ public class KeyHandler implements KeyListener {
     private boolean isLeftPressed;
     private boolean isRightPressed;
 
+    private boolean isZPressed;
+
     @Override
     public void keyTyped (KeyEvent e) {
 
@@ -30,6 +32,9 @@ public class KeyHandler implements KeyListener {
         else if (code == KeyEvent.VK_RIGHT) {
             this.isRightPressed = true;
         }
+        else if (code == KeyEvent.VK_Z) {
+            this.isZPressed = true;
+        }
     }
 
     @Override
@@ -48,22 +53,29 @@ public class KeyHandler implements KeyListener {
         else if (code == KeyEvent.VK_RIGHT) {
             this.isRightPressed = false;
         }
+        else if (code == KeyEvent.VK_Z) {
+            this.isZPressed = false;
+        }
     }
 
     public boolean isUpPressed () {
-        return isUpPressed;
+        return this.isUpPressed;
     }
 
     public boolean isDownPressed () {
-        return isDownPressed;
+        return this.isDownPressed;
     }
 
     public boolean isLeftPressed () {
-        return isLeftPressed;
+        return this.isLeftPressed;
     }
 
     public boolean isRightPressed () {
-        return isRightPressed;
+        return this.isRightPressed;
+    }
+
+    public boolean isZPressed () {
+        return this.isZPressed;
     }
 
     public boolean isNothingPressed () {
