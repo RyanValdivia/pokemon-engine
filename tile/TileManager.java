@@ -1,5 +1,6 @@
 package tile;
 
+import entity.Player;
 import main.GamePanel;
 
 import javax.imageio.ImageIO;
@@ -25,13 +26,15 @@ public class TileManager {
     public void getTileImage () {
         try {
             this.tiles[0] = new Tile();
-            this.tiles[0].setImage(ImageIO.read(new File("resources/tiles/test_tile.png")));
+            this.tiles[0].setImage(ImageIO.read(new File("resources/tiles/grass_tile.png")));
 
             this.tiles[1] = new Tile();
-            this.tiles[1].setImage(ImageIO.read(new File("resources/tiles/test_tile.png")));
+            this.tiles[1].setImage(ImageIO.read(new File("resources/tiles/wall_tile.png")));
+            this.tiles[1].setCollision(true);
 
             this.tiles[2] = new Tile();
-            this.tiles[2].setImage(ImageIO.read(new File("resources/tiles/test_tile.png")));
+            this.tiles[2].setImage(ImageIO.read(new File("resources/tiles/water_tile.png")));
+            this.tiles[2].setCollision(true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -71,11 +74,25 @@ public class TileManager {
                 int x = j * gamePanel.getTILE_SIZE();
                 int y = i * gamePanel.getTILE_SIZE();
 
-                int screenX = x - gamePanel.getPlayer().getX() + gamePanel.getPlayer().getScreenX();
-                int screenY = y - gamePanel.getPlayer().getY() + gamePanel.getPlayer().getScreenY();
+                if (this.calculateOffset(x, y)) {
+                    int screenX = x - gamePanel.getPlayer().getX() + gamePanel.getPlayer().getScreenX();
+                    int screenY = y - gamePanel.getPlayer().getY() + gamePanel.getPlayer().getScreenY();
 
-                g2d.drawImage(image, screenX, screenY, image.getWidth() * this.gamePanel.getSCALE(), image.getHeight() * this.gamePanel.getSCALE(), null);
+                    g2d.drawImage(image, screenX, screenY, image.getWidth() * this.gamePanel.getSCALE(), image.getHeight() * this.gamePanel.getSCALE(), null);
+                }
             }
         }
+    }
+
+    private boolean calculateOffset (int x, int y) {
+        Player player = gamePanel.getPlayer();
+
+        int leftBoundary = player.getX() - player.getScreenX() - gamePanel.getTILE_SIZE();
+        int rightBoundary = player.getX() + player.getScreenX() + gamePanel.getTILE_SIZE();
+        int topBoundary = player.getY() - player.getScreenY() - gamePanel.getTILE_SIZE();
+        int bottomBoundary = player.getY() + player.getScreenY() + gamePanel.getTILE_SIZE();
+
+        return x + gamePanel.getTILE_SIZE() > leftBoundary && x - gamePanel.getTILE_SIZE() < rightBoundary &&
+                y + gamePanel.getTILE_SIZE() > topBoundary && y - gamePanel.getTILE_SIZE() < bottomBoundary;
     }
 }

@@ -16,6 +16,8 @@ public class Player extends Entity {
     private final int screenX;
     private final int screenY;
 
+    private int spriteFramerate = 12;
+
     private final int defaultSpeed = 4;
 
     private final BufferedImage[][] runningFrames;
@@ -67,12 +69,14 @@ public class Player extends Entity {
         }
         if (keyHandler.isZPressed()) {
             this.setSpeed((int) (defaultSpeed * 1.5));
+            this.spriteFramerate = 4;
         } else {
             this.setSpeed(defaultSpeed);
+            this.spriteFramerate = 12;
         }
 
         this.setSpriteCounter(this.getSpriteCounter() + 1);
-        if (this.getSpriteCounter() > 12) {
+        if (this.getSpriteCounter() > this.spriteFramerate) {
             this.setSpriteNumber((this.getSpriteNumber() + 1) % 4);
             this.setSpriteCounter(0);
         }
@@ -109,7 +113,7 @@ public class Player extends Entity {
     }
 
     public void draw (Graphics2D g2d) {
-        BufferedImage[][] frames = this.keyHandler.isZPressed() ? this.runningFrames : this.getFrames();
+        BufferedImage[][] frames = this.keyHandler.isZPressed() && !keyHandler.isNothingPressed() ? this.runningFrames : this.getFrames();
 
         BufferedImage image = switch (this.getDirection()) {
             case DOWN -> frames[0][this.getSpriteNumber()];
